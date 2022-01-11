@@ -1,0 +1,42 @@
+^ is XOR character in most programming languages
+
+known plaintext
+ when you know part or all of the encrypted message, can be used to break the cypher
+ p ^ k = c
+ p ^ c = k
+ where p is plaintext
+ k is the key
+ and c is the cypher
+
+XOR is commutative
+
+data 
+ClVLIh4ASCsCBE8lAxMacFMZV2hdVVotEhhUJQNVAmhSEV4sFxFeaAw=
+
+$d
+"showpassword"=>"no", "bgcolor"=>"#ffffff"
+
+data = base64_encode(xor_encrypt(json_encode($d)))
+
+base64_decode(data) = xor_ecrypt(json_encode($d))
+
+json_encode($defaultdata)
+{"showpassword":"no","bgcolor":"#ffffff"}
+
+base64_decode(data)
+
+
+
+defaultdata starts here, this is the known plaintext
+$defaultdata = array( "showpassword"=>"no", "bgcolor"=>"#ffffff");
+when the page loads, default data is sent through the loadData function
+$data = loadData($defaultdata);
+this sets the cookie 'data' based on the variable $defaultdata, which is then passed to the savedata function
+saveData($data)
+which encrypts the data & encodes it in json format
+function saveData($d) {
+    setcookie("data", base64_encode(xor_encrypt(json_encode($d))));
+}
+
+key (plaintext, not base64)
+qw8J
