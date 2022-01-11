@@ -1,0 +1,6 @@
+at
+ls
+grep
+
+natas10
+.* ../../../../../etc/natas_webpass/natas11
