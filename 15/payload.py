@@ -1,5 +1,4 @@
 import requests
-import urllib.parse
 
 headers = {'Authorization': 'Basic bmF0YXMxNTpBd1dqMHc1Y3Z4clppT05nWjlKNXN0TlZrbXhkazM5Sg=='}
 
