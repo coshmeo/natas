@@ -6,7 +6,7 @@ url = 'http://natas15.natas.labs.overthewire.org/index.php'
 
 password = ''
 
-#next, we need to find out how long the password is
+#first, we need to find out how long the password is
 
 #this payload should request the length of the password for natas16 and compare it to our value 'l'
 #our value will be appended to the payload and use a loop to cycle through until a true value is reached
