@@ -32,3 +32,5 @@ second: figure out how to go through each character of the password (like the la
     grep ^.a works without quotes on my macbook, but doesn't seem to behave the same on natas...
         further research required, we'll see what the group says.
     
+    *important note* 
+    there are double quotes on either side of $key, meaning that payload is actually "payload" for testing purposes
