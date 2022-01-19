@@ -6,4 +6,27 @@ subshells - executing a shell command inside another shell command
 only works because the command we are inecting into uses double quotes
 $(command goes here)
 
+if($key != "") {
+    if(preg_match('/[;|&`\'"]/',$key)) {
+        print "Input contains an illegal character!";
+    } else {
+        passthru("grep -i \"$key\" dictionary.txt");
+    }
 
+allowable characters: $()>~!{}
+dissalowed characters: [;|&`\'"]
+should be able to do something with these...
+
+did a burp intruder attack, was able to find the characters which match the password. i now have a 'true/false' condition
+if a character matches the password, the response will show the entire dictionary (462177 characters long)
+otherwise doesn't return any results (just the regular page with no output)
+
+first: figure out how to make grep case sensitive (it doesn't seem to be right now)
+    ok that was easy, just don't use -i
+second: figure out how to go through each character of the password (like the last challenge).
+    grep -E '^.{12}[89]8765' file1
+            '^.{12} part here means any first 12 characters (example was matching characters 13-17)
+    so we could use this...i think?
+    no because we can't use quotes
+
+    
