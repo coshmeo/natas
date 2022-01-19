@@ -1,0 +1,9 @@
+seems like 9 & 10 but with more filtering?
+
+.* ../../../../../etc/natas_webpass/natas17 doesn't work, but doesn't return 'Input contains an illegal character!'
+
+subshells - executing a shell command inside another shell command
+only works because the command we are inecting into uses double quotes
+$(command goes here)
+
+
