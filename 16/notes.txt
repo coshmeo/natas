@@ -34,3 +34,7 @@ second: figure out how to go through each character of the password (like the la
     
     *important note* 
     there are double quotes on either side of $key, meaning that payload is actually "payload" for testing purposes
+
+    using range() and chr(i) seems redundant now, will be easier to just iterate through letters & numbers
+    can use python string pckg.
+    string.ascii_letters + string.digits 
