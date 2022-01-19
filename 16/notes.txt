@@ -28,5 +28,7 @@ second: figure out how to go through each character of the password (like the la
             '^.{12} part here means any first 12 characters (example was matching characters 13-17)
     so we could use this...i think?
     no because we can't use quotes
-
+    but maybe we don't need quotes?
+    grep ^.a works without quotes on my macbook, but doesn't seem to behave the same on natas...
+        further research required, we'll see what the group says.
     
