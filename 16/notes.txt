@@ -45,3 +45,6 @@ second: figure out how to go through each character of the password (like the la
     which again, works locally, but for some reason adding the ${x:0:1} breaks natas
                                                                  ^x is $(grep ^.a password.txt)
     not really sure why it doesn't work, gonna sleep on it and try again tmrw.
+
+    so according to what i've got so far, it looks like there are 36 valid characters (???)
+    all the other passwords were 32 characters, it seems unlikely that it would change now?
