@@ -30,5 +30,6 @@ for c in range(0,length): #loop for each character in the password
             password += i
             break
     position += '.'
+    print(i, end='')
 
-print(password)
+print('password is: '+password)

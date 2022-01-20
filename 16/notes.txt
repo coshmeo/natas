@@ -38,3 +38,10 @@ second: figure out how to go through each character of the password (like the la
     using range() and chr(i) seems redundant now, will be easier to just iterate through letters & numbers
     can use python string pckg.
     string.ascii_letters + string.digits 
+    
+    echo "${$(grep ^.a password.txt):0:1}" works locally, but doesn't translate to natas (yet...!)
+    full command woudl be:
+    grep -i "${$(grep ^.a password.txt):1:1}" dictionary.txt
+    which again, works locally, but for some reason adding the ${x:0:1} breaks natas
+                                                                 ^x is $(grep ^.a password.txt)
+    not really sure why it doesn't work, gonna sleep on it and try again tmrw.
