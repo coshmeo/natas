@@ -1,5 +1,6 @@
 import requests
 import string
+import sys
 
 headers = {'Authorization': 'Basic bmF0YXMxNjpXYUlIRWFjajYzd25OSUJST0hlcWkzcDl0MG01bmhtaA=='}
 
@@ -46,5 +47,6 @@ for p in range(0,length): #loop for each character in the password
         if len(r.text) == 1105:
             password += c
             print(c, end='')
+            sys.stdout.flush()
 
     offset += '.'
