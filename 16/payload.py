@@ -45,7 +45,7 @@ for p in range(0,length): #loop for each character in the password
         r = requests.get(url+payload, headers=headers)
         if len(r.text) == 1105:
             password += c
-            print(c, end='')
+            print(c)
 
     offset += '.'
 
