@@ -22,7 +22,6 @@ syntax looks like this:
 try: 
     r = requests.post(url+payload, headers=headers, timeout=5)
 except requests.exceptions.ReadTimeout:
-    password+=chr(i)
     print(chr(i), end='', flush=True)
     break
 
