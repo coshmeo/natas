@@ -1,1 +1,4 @@
 password eofm3Wsshxc5bwtVnEuGIlr7ivb9KABF
+
+looks like they're doing custom encoding now
+involves reading & writing session id from a file on the server?
