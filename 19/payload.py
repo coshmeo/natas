@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 
 headers = {'Authorization': 'Basic bmF0YXMxOTo0SXdJcmVrY3VabEE5T3NqT2tvVXR3VTZsaG9rQ1BZcw=='}
 
