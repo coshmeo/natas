@@ -31,3 +31,4 @@ for p in range(0,length): #loop for each character in the password
             print(c, end='', flush=True)
 
     offset += '.'
+print() #stops % from printing when script finishes

