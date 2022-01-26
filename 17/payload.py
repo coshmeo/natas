@@ -13,3 +13,4 @@ for c in range(1,33): #loop for each character in the password (32 characters lo
         except requests.exceptions.ReadTimeout:
             print(chr(i), end='', flush=True)
             break
+print() # stops a % from printing when the script ends
