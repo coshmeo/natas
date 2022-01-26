@@ -95,3 +95,4 @@ a       --> 96-6
 a       --> 259-7
 
 let's try '{}-admin'.format(i).encode().hex()
+great success!
