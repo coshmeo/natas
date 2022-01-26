@@ -11,6 +11,4 @@ for i in range(1, 641): # per source there are 640 session IDs
         
         soup = BeautifulSoup(r.text, 'html.parser')
         print(soup.find(id='content'))
-        print('PHPSESSID: '+i) # we need this for the next challenge
-
         break
