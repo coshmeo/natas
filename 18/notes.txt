@@ -1,1 +1,4 @@
 password xvKIqDjy4OPv7wCRgDlmj0pFsCsDjhdP
+
+used hints online, looks like i need to manipulate PHPSESSID to find the one assigned to admin...
+easy enough, just send requests looping through IDs 1-640 until i find the one assigned to admin.
