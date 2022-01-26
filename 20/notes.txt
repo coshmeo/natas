@@ -2,3 +2,12 @@ password eofm3Wsshxc5bwtVnEuGIlr7ivb9KABF
 
 looks like they're doing custom encoding now
 involves reading & writing session id from a file on the server?
+does not appear to be static anymore
+
+name        PHPSESSID
+admin   --> rj4qlpd1ncn3u57jm5jnfv4f85
+admin   --> rgtutitq84a5tbe6vv2b7ur562
+admin   --> euafj84lt2q70too75b1j4tdc5
+admin   --> 3oob6epa7e7mrpri4070h7ncp3
+
+hints say i should look at how past sessions are being encoded, how to add fields, and each field occupies one line
