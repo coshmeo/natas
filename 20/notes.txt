@@ -163,7 +163,7 @@ session_set_save_handler(
     "mydestroy", 
     "mygarbage");
 sets the order of operations & tells php which functions to use
-so effectively, it reads, then writes, and that's it since the rest of the functions are all commented out.
+so effectively, it reads, then writes, and that's it since all of the other functions are commented out to return True.
 
 it calls session_start(), which initializes the php session.
 per php docs:
@@ -178,6 +178,20 @@ if(array_key_exists("name", $_REQUEST)) {
 
 which just adds 'name' to $_SESSION if 'name' is in $_REQUEST.
 
-so...we've gone through all the php on the page, but i haven't seen where anything's actually being encoded.
-the PHPSESSID we've seen so far look like they're hex encoded (like the last level).
-let's try decoding them and see what we get.
+so...we've gone through all the php on the page, but i'm still not sure where PHPSESSID is being created.
+
+further recon shows PHPSESSID is always 26 characters long
+
+name        PHPSESSID                   length
+a       --> 0ir1a49b57rffjdq9h1m1llo54  len: 26
+ad      --> 20uiu4aqenpv8r4akth5nem101  len: 26
+adm     --> kkh4naorcfrof9p9rcqt7q0gu1  len: 26
+admi    --> h7aq6tk4c5l51f4ifnvfme10q0  len: 26
+admin   --> dd9r6cgne57tam7rpoen325h17  len: 26
+admin   --> hmn99sq61pcpt2r3l49cedkj33  len: 26
+admin   --> 5nd891geihcc27eao8g5qrvi43  len: 26
+admin   --> 7348f1e49hgf6sit47v3hsqck6  len: 26
+admin   --> l10nccurthsbjh1n07sci4bg10  len: 26
+
+there also don't seem to be any capital letters...
+not sure what to make of this but it seems like it's worth noting.
