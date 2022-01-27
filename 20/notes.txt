@@ -11,3 +11,141 @@ admin   --> euafj84lt2q70too75b1j4tdc5
 admin   --> 3oob6epa7e7mrpri4070h7ncp3
 
 hints say i should look at how past sessions are being encoded, how to add fields, and each field occupies one line
+
+--------------------------------------------------------------------------------------------------------
+
+function myread($sid) { 
+    debug("MYREAD $sid"); 
+    if(strspn($sid, "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-") != strlen($sid)) {
+    debug("Invalid SID"); 
+        return "";
+    }
+    $filename = session_save_path() . "/" . "mysess_" . $sid;
+    if(!file_exists($filename)) {
+        debug("Session file doesn't exist");
+        return "";
+    }
+    debug("Reading from ". $filename);
+    $data = file_get_contents($filename); --> this pulls data from the file $filename defined above
+    $_SESSION = array();
+    foreach(explode("\n", $data) as $line) {
+        debug("Read [$line]");
+    $parts = explode(" ", $line, 2);
+    if($parts[0] != "") $_SESSION[$parts[0]] = $parts[1];
+    }
+    return session_encode();
+}
+
+function mywrite($sid, $data) { 
+    // $data contains the serialized version of $_SESSION
+    // but our encoding is better
+    debug("MYWRITE $sid $data"); 
+    // make sure the sid is alnum only!!
+    if(strspn($sid, "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-") != strlen($sid)) {
+    debug("Invalid SID"); 
+        return;
+    }
+    $filename = session_save_path() . "/" . "mysess_" . $sid;
+    $data = "";
+    debug("Saving in ". $filename);
+    ksort($_SESSION);
+    foreach($_SESSION as $key => $value) {
+        debug("$key => $value");
+        $data .= "$key $value\n";
+    }
+    file_put_contents($filename, $data);
+    chmod($filename, 0600);
+}
+
+--------------------------------------------------------------------------------------------------------
+
+$_SESSION An associative array containing session variables available to the current script
+    for this challenge, it has at least 2 elements:
+        "admin" & "name"
+        possibly more?
+
+if(strspn($sid, "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-") != strlen($sid)) {
+    debug("Invalid SID"); 
+    return "";
+}
+    this throws an error and cancels myread() or mywrite() if the lengths don't match.
+    strspn per php docs:
+        Finds the length of the initial segment of a string consisting entirely of characters contained within a given mask 
+        strspn(
+        string $string,
+        string $characters,
+        int $offset = 0,
+        ?int $length = null
+        ): int
+
+so effectively it just makes sure that $sid only contains characters in the given set
+
+$data = file_get_contents($filename); 
+$_SESSION = array();
+foreach(explode("\n", $data) as $line) {
+    debug("Read [$line]");
+    $parts = explode(" ", $line, 2);
+    if($parts[0] != "") $_SESSION[$parts[0]] = $parts[1];
+}
+return session_encode();
+
+so here, $data is set to the conents of the saved session file, then it sets $_SESSION to a blank array.
+next, for each line in $data (separated by newline (\n)) it separates the lines at the spaces.
+then it sets the second part ($parts[1]) equal to the first part, if the first part ($parts[0]) isn't blank.
+finally it returns the session_encode, which encodes $_SESSION
+
+session_encode() works like this:
+    session_start();
+
+    $_SESSION['sid'] = 120;
+    $_SESSION['admin'] = 1;
+    $_SESSION['name'] = 'admin';
+
+
+echo session_encode();
+returns the following:
+sid|i:120;admin|i:1;name|s:5:"admin";
+
+now let's take a look at what the mywrite function does
+
+function mywrite($sid, $data) { 
+    // $data contains the serialized version of $_SESSION
+    // but our encoding is better
+    debug("MYWRITE $sid $data"); 
+    // make sure the sid is alnum only!!
+    if(strspn($sid, "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-") != strlen($sid)) {
+    debug("Invalid SID"); 
+        return;
+}
+
+so this part is pretty similar to myread, it just checks to make sure $sid contains the characters they want
+clearly here, they think they are smarter than the php devs...hehe. undoubtedly, it is 'better'
+
+    $filename = session_save_path() . "/" . "mysess_" . $sid;
+    $data = "";
+    debug("Saving in ". $filename);
+    ksort($_SESSION);
+    foreach($_SESSION as $key => $value) {
+        debug("$key => $value");
+        $data .= "$key $value\n";
+    }
+    file_put_contents($filename, $data);
+    chmod($filename, 0600);
+
+so once it has has validated $sid, it sets $filename to the stored session save path (probably /var/www/html or something)
+and then adds /mysess_ + the value of $sid.
+next sets $data as a blank string
+then it does ksort on $_SESSION.
+ksort sorts array keys in ascending order (alphabetical, it seems?)
+assuming our 3 elements of $_SESSION are admin, name, and sid:
+    it would sort them in alphabetical order
+    admin: 1
+    name: admin
+    sid: 123
+so it ksorts them, and then appends $key & $value to $data, which looks like this:
+    admin 1 name admin sid 120
+then it writes $data to $filename, and sets permissions with chmod
+code 0600 means: Read and write for owner, nothing for everybody else
+
+now that we've gone through the custom read/write functions, let's take a look at the rest of the code.
+
