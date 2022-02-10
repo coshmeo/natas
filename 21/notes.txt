@@ -1,2 +1,66 @@
 IFekPyrQXftziDEsUr3x21sYuahypdgJ
 
+this one has 2 pages, natas21, and natas21-experimenter
+it has the print_credentials() function from last time
+looks like we need to use the experimenter page to add admin to $_SESSION
+
+first glance at the experimenter page, there are 3 text fields 
+these are controls for the 'example'
+
+they are controlled by the following php code
+$style = "background-color: ".$_SESSION["bgcolor"]."; text-align: ".$_SESSION["align"]."; font-size: ".$_SESSION["fontsize"].";";
+
+from the page-source, there are two sections with comments
+
+// only allow these keys
+$validkeys = array("align" => "center", "fontsize" => "100%", "bgcolor" => "yellow");
+$form = "";
+
+$validkeys appears to restrict what keys can be submitted to $_SESSION.
+it is also referenced in the following php code which creates a form on the page
+
+$form = "";
+
+$form .= '<form action="index.php" method="POST">';
+foreach($validkeys as $key => $defval) {
+    $val = $defval;
+    if(array_key_exists($key, $_SESSION)) {
+    $val = $_SESSION[$key];
+    } else {
+    $_SESSION[$key] = $val;
+    }
+    $form .= "$key: <input name='$key' value='$val' /><br>";
+}
+$form .= '<input type="submit" name="submit" value="Update" />';
+$form .= '</form>';
+
+which is then processed by the code at the top.
+
+// if update was submitted, store it
+if(array_key_exists("submit", $_REQUEST)) {
+    foreach($_REQUEST as $key => $val) {
+    $_SESSION[$key] = $val;
+    }
+}
+
+we can check the contents of $_SESSION with the debug function
+
+index.php?debug
+
+the goal is to set $_SESSION["admin"] = 1
+
+setting the align to // results in a blank $_SESSION
+so we can assume that we can at least somewhat inject into the php where it's creating the form
+
+particularly on line 29
+$form .= "$key: <input name='$key' value='$val' /><br>";
+
+we can inject some php into $val
+tried using delete with html entity encoding
+&#127;
+just seems to add a blank character though.
+
+entering
+'<input name='admin' value='1' /><br>";//
+results in a textbox showing up in debug (see progress.jpg)
+
