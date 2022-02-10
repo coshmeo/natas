@@ -64,3 +64,10 @@ entering
 '<input name='admin' value='1' /><br>";//
 results in a textbox showing up in debug (see progress.jpg)
 
+'/><br>";} form = "'admin' <input name='admin' value='1' /><br>"
+
+setting 'align' to the value above adds a text box under align, which you can then submit again using the update button
+this adds 'admin' = '1' to $_SESSION
+then, go back to the main natas21 page, and refresh it to get the password for the next level
+
+note: make sure that the cookie value on natas21 is the same as the one on experimenter
