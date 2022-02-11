@@ -1,2 +1,30 @@
 chG9fbe1Tq2eWVMgjYYD1MsfIvN461kJ
 
+at first glance, the page is blank.
+looking at the page source, it looks like we need to add "revelio" to our GET request
+
+if revelio is in our GET request, then the credentials will print
+
+if $_SESSION doesn't exist and admin isn't in $_SESSION and admin isn't 1, then the header Location is set to /
+
+maybe we can try header injection?
+
+changing the Host header to revelio (intead of url) returns the following:
+
+HTTP/1.1 200 OK
+Date: Fri, 11 Feb 2022 06:08:30 GMT
+Server: Apache/2.4.10 (Debian)
+Last-Modified: Thu, 15 Dec 2016 21:07:45 GMT
+ETag: "76-543b8d8450a40-gzip"
+Accept-Ranges: bytes
+Vary: Accept-Encoding
+Content-Length: 118
+Connection: close
+Content-Type: text/html
+
+<html>
+<head>
+<meta HTTP-EQUIV="REFRESH" content="0; url=http://www.overthewire.org/wargames/natas/">
+</head>
+</html>
+
