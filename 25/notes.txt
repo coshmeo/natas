@@ -1,2 +1,48 @@
 GHF6X7YwACaYYssHVY05cFq83hRktl4c
 
+lots of code to go through on this one.
+let's start with safeinclude
+it removes ../ from whatever is passed to it
+also exits if it is passed anything containing the string "natas_webpass"
+safeinclude is only called in the setLangauge function
+this effectively prevents injection into this part of the application
+
+next up is listFiles
+it takes $path as input
+creates a blank array $listoffiles
+then, if the path exists (opendir returns false if $path is invalid)
+it sets $handle to the directory path returned from opendir
+then, while readdir is not false, $file is set to the filename returned from $handle passed to readdir
+next, if the filename is not . or .., the filename ($file from readdir) is appended to the array $listoffiles 
+the directory is then closed and the list of files is returned.
+listFiles is called when the page loads to set the langauge. 
+it is passed "language/" and returns "en" and "de" as options in the dropdown menu on the page.
+presumeably, there are two files in the language directory
+
+next is logRequest
+this takes $message as input, then creates a log entry in the log file
+it starts with [date]
+then appends the HTTP USER AGENT header
+followed by $message, and ends with a newline.
+it then appends (or creates if it does not exist) the file in the following format:
+"/var/www/natas/natas25/logs/natas25_" . session_id() .".log"
+writes the log message to the file, then closes the file.
+
+lastly, let's check out setLangauge
+it's called when the page loads, and if $lang is in $_SESSION, and if $lang passes safeinclude
+it returns 1
+otherwise it defaults to "language/en"
+
+now that we've gone over all the funcitons, lets take a look at how it all works together
+
+when the page loads, listFiles is called and it loads the two files in languages/, en and de.
+the files are put into the dropdown language menu.
+they are also passed through the safeinclude funciton, so we can't inject into these.
+
+start_session is then called to create a session, and setLangauge is called to load the content on the page
+
+so, it seems our best bet is to try to inject into the log files
+logRequest is only called when safeinclude detects "../" or "natas_webpass"
+safeinclude is only called when setting the langauge.
+so we need to change $lang to trigger safeinclude to make a logRequest
+and then try to manipulate HTTP USER AGENT to get the password for the next level.
