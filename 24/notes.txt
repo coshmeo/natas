@@ -1,2 +1,11 @@
 OsRmXFguozKpTZZ5X14zNO43379LZveg
 
+this one is similar to the last one, but it uses the strcmp function.
+according to the docs, it is a binary safe string comparison
+returns int as follows:
+less 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
+
+hints say to look at how to break strcmp
+a quick google search shows that if you set passwd to a blank array, it will return 0
+
+so adding ?passwd[]="" to the url completes the challenge
