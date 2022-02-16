@@ -1,2 +1,14 @@
 D0vlad33nQF0Hz2EP255TP5wSW9ZsRSE
 
+source code review shows that we have 2 conditions:
+    1. the password must contain the string "iloveyou"
+    1. it must also evaluate to an integer greater than 10
+
+hints say something about type casting...
+
+after messing around with converting strings to integers, php appears to behave as follows
+it looks at the first character of the string, if it's a number, then it moves on, otherwise it returns 0
+
+so to solve this challenge, you just need to start with a number greater than 10, followed by iloveyou
+because the strstr() funtion find the first occurance of the string
+it doesn't care where in the string it is.
