@@ -9,22 +9,12 @@ if $_SESSION doesn't exist and admin isn't in $_SESSION and admin isn't 1, then 
 
 maybe we can try header injection?
 
-changing the Host header to revelio (intead of url) returns the following:
+changing the Host header to revelio (intead of url) returns a 200 OK and then redirects to the natas start page
 
-HTTP/1.1 200 OK
-Date: Fri, 11 Feb 2022 06:08:30 GMT
-Server: Apache/2.4.10 (Debian)
-Last-Modified: Thu, 15 Dec 2016 21:07:45 GMT
-ETag: "76-543b8d8450a40-gzip"
-Accept-Ranges: bytes
-Vary: Accept-Encoding
-Content-Length: 118
-Connection: close
-Content-Type: text/html
+adding /index.php returns the same page, but still no admin...
+what if we added revelio to that in the GET request?
 
-<html>
-<head>
-<meta HTTP-EQUIV="REFRESH" content="0; url=http://www.overthewire.org/wargames/natas/">
-</head>
-</html>
+it works!
 
+adding /index.php?revelio to the GET request returns the admin creds for the next level.
+note: this must be done in brup, doesn't work if you add it to the url in browser.
