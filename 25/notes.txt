@@ -41,8 +41,34 @@ they are also passed through the safeinclude funciton, so we can't inject into t
 
 start_session is then called to create a session, and setLangauge is called to load the content on the page
 
-so, it seems our best bet is to try to inject into the log files
+seems the best bet is to try to inject into the log files
 logRequest is only called when safeinclude detects "../" or "natas_webpass"
 safeinclude is only called when setting the langauge.
-so we need to change $lang to trigger safeinclude to make a logRequest
-and then try to manipulate HTTP USER AGENT to get the password for the next level.
+setting $lang to natas_webpass will trigger safeinclude to make a logRequest
+then HTTP USER AGENT can be manipulated to get the password for the next level.
+
+if the log can be saved in the language folder, it should be readable from the main page.
+some php will need to be injeced into the USER AGENT header to save it there.
+unfortunately i don't think this is going to work because it requires more than one line of php
+
+file_get_contents("/etc/natas_webpass/natas26");
+
+putting this in the USER AGENT header should write the password into the log
+now to find a way to access the log...
+
+the safeinclude function is not recurseive, so if a ../ is embedded inside another ../
+like so ..././
+it should be possible to pull the log file
+
+this does work, but the php code in the USER AGENT isn't executing, it's just displayed as text in the log.
+in order for this to work, it needs to be wrapped in <?php ?>, and include an echo.
+
+final payload looks like this
+
+GET /?lang=../
+...
+User-Agent: <?php echo file_get_contents("/etc/natas_webpass/natas26"); ?>
+
+then
+
+GET /?lang=..././..././..././..././..././ + path to log file
