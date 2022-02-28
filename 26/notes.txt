@@ -1,1 +1,35 @@
 oGgWAJ7zcGT28vYazGo4rkhOPDhBu34T
+
+variables we control:
+x1 y1 x2 y2
+
+cookies we control:
+drawing (x & y variables above in php array format)
+
+logger class
+called using ?logger in url
+
+methods
+    __construct
+        takes $file as input
+        creates log, or appends msgs to existing file
+        variable $logFile sets path to /tmp/natas26_" . $file . ".log"
+        perhaps this can be changed to display log on the main page?
+            main page location should be
+            /var/www/natas26/
+
+    log
+        takes $msg as input, appends $msg to log file
+        uses location stored in $logFile
+
+    __destruct
+        no input, appends closing msg defined in $exitMsg to log file
+
+?logger->__construct($file)
+    create a log at location /tmp/natas26_`$file`.log
+    and sets private $logFile variable in Logger to $file
+    
+?logger->log($msg)
+    adds $msg to log file. 
+    if $msg = <?php file_get_contents(/etc/natas_webpass/natas27) ?> it should print the password for the next level in the log file
+
