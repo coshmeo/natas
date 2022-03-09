@@ -17,6 +17,7 @@ Logger class
             perhaps this can be changed to display log on the main page?
                 main page location should be
                 /var/www/natas26/
+            runs at the beginning of the script (magic php method)
 
         log
             takes $msg as input, appends $msg to log file
@@ -24,6 +25,7 @@ Logger class
 
         __destruct
             no input, appends closing msg defined in $exitMsg to log file
+            runs at end of script (magic php method)
 
     $mylog = new Logger($file);
         creates a new Logger class, referenced by the object $mylog
@@ -34,13 +36,14 @@ Logger class
         
     mylog->log($msg);
         adds $msg to log file. 
-        if $msg = <?php file_get_contents(/etc/natas_webpass/natas27); ?> it should print the password for the next level in the log file
+        
+        
 
 attack plan:
-    create a Logger class
-    change $logFile to a location i can access from the main page
-    make Logger log a $msg containing php code which will get the password
-    access the log
+    create my own Logger
+    set $logFile to an accessible path
+    use the logger to execute this code <?php echo file_get_contents("/etc/natas_webpass/natas27");?>
+    access the 'log' file.
 
 the attack vector should be through the drawing cookie using php object injection
 drawing cookie is seralized and base64 encoded
@@ -61,13 +64,14 @@ which will be attached to a request like this
     Cookie: data=O%3A8%3A%22Example2%22%3A1%3A%7Bs%3A14%3A%22%00Example2%00hook%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D
     Connection: close
 
-in order for this attack to work, a serialized Logger needs to be sent to the server to unpack
-the Logger code on the page source can be modified to suite our needs. 
-since the __destruct method runs at the end of the script, we will use this to get the password
-by changing exitMsg to our payload, it will create or append the password to the value of $logFile
-we know that the page has access to the img/ folder, so we will put the file there.
-we cannot use the picture, because the picture gets rewritten each time the page loads
-remember that in order for the php to execute, the destiation file must have a .php extension
+in order for the attack to work, a serialized Logger needs to be sent to the server to unpack.
+the Logger code from the page source can be modified to execute the exploit. 
+__construct runs at the beginning of the script, and can be used to initialize the modified variables.
+__destruct function runs at the end of the script, which happens every time we load the page.
+by changing exitMsg to our payload, it will write the password at the end of the file.
+the page can read images from the img/ folder, so this seems like a good place to put the 'log' file.
+we cannot use the picture itself, because the picture gets rewritten each time the page loads.
+remember that in order for the php to execute, the destiation file must have a .php extension.
 also, make sure that any double quotes inside the payload are properly esacped.
 
 class Logger{
@@ -97,5 +101,5 @@ $mylog = new Logger();
 
 print base64_encode(serialize($mylog));
 
-paste the encoded payload into the drawing cookie in Burp repeater and send it.
+set the value of the drawing cookie to the output.
 then, navigate to the newly created img/passwd.php file to retreive the password.
