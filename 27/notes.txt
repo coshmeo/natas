@@ -1,2 +1,20 @@
 55TBjpPZUUJgVP5b3BnbG6ON9uDPVzCJ
 
+variables we control
+username & password
+
+mysql_real_escape_string() calls MySQL's library function mysql_real_escape_string, 
+which prepends backslashes to the following characters: \x00, \n, \r, \, ', " and \x1a. 
+
+this is a deprecated function and can most likely be bypassed. further research required.
+
+as before, the username for the next level is natas28.
+
+if the request thas username and password in it, it will check if the user is valid, then check the password
+if the password is valid, it displays the data, otherwise it says 'wrong password'
+if the username doesn't exist, it creates it with the password in the request.
+
+each function in the application uses mysql_real_escape_string.
+the goal is to get the application to call dumpData for natas28
+
+what if we created a username that tricks the database into giving us natas28 data?
