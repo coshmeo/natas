@@ -17,4 +17,42 @@ if the username doesn't exist, it creates it with the password in the request.
 each function in the application uses mysql_real_escape_string.
 the goal is to get the application to call dumpData for natas28
 
-what if we created a username that tricks the database into giving us natas28 data?
+what if we created a username that tricks the application into giving us the natas28 data?
+
+the username and password fields are limited to 64 characters
+so if we submit 64 spaces and natas28, the pages says it creates the user natas28
+but it doesn't let us log in
+
+let's take a closer look at the SQL
+
+SELECT username from users where username='$user' and password='$password'
+
+INSERT INTO users (username,password) values ('$user','$password')
+
+SELECT * from users where username='$user'
+
+if a username longer than 64 characters is submitted, any characters after 64 are truncated
+for example: natas28                                                         a
+the a gets truncated and natas28 with all the whitespace is created as a new user
+
+logging in again as natas28 (without the whitespace) then shows the password for the natas28.
+
+this works because when the database compares natas28 (without whitepsace)
+it matches with natas28 (with whitespace) and the associated password
+because SQL adds whitespace to the non-whitespace natas28 during the comparison in the select statement.
+
+<https://datacadamia.com/_media/data/type/relation/sql/sql1992.txt> pg. 208:
+3) The comparison of two character strings is determined as fol-
+            lows:
+
+            a) If the length in characters of X is not equal to the length
+              in characters of Y, then the shorter string is effectively
+              replaced, for the purposes of comparison, with a copy of
+              itself that has been extended to the length of the longer
+              string by concatenation on the right of one or more pad char-
+              acters, where the pad character is chosen based on CS. If
+              CS has the NO PAD attribute, then the pad character is an
+              implementation-dependent character different from any char-
+              acter in the character set of X and Y that collates less
+              than any string under CS. Otherwise, the pad character is a
+              <space>.
