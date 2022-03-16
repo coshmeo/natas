@@ -6,3 +6,9 @@ searching for < or > results in a blank page, seems to break the application (ma
 
 when searching for things, the query parameter is always divisble by 16 (suspicious)
 
+encryption!
+block cipher
+breaking up input into blocks & padding blocks on decryption
+AES?
+
+be aware of how the cipher text changes when i change my query, keeping in mind the length of the blocks.
