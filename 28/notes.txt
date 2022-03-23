@@ -12,3 +12,92 @@ breaking up input into blocks & padding blocks on decryption
 AES?
 
 be aware of how the cipher text changes when i change my query, keeping in mind the length of the blocks.
+
+not for this challenge, but padding oracle attacks are a good start for trying to break block ciphers
+in cryptography, an oracle is something (another part of an application) that allows you to encrypt/decrypt something
+
+if we search for 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab'
+and then decrypt the encrypted query, 3 of the blocks in the middle are the same
+
+1B E8 25 11 A7 BA 5B FD 57 8C 0E EF 46 6D B5 9C
+DC 84 72 8F DC F8 9D 93 75 1D 10 A7 C7 5C 8C F2
+C0 87 2D EE 8B C9 0B 11 56 91 3B 08 A2 23 A3 9E     <-- we don't know how much (if any) of this line is part of our query
+
+B3 90 38 C2 8D F7 9B 65 D2 61 51 DF 58 F7 EA A3     <-- these 3 blocks are 48 of the a's from our query
+B3 90 38 C2 8D F7 9B 65 D2 61 51 DF 58 F7 EA A3         but we don't know which a's (yet)
+B3 90 38 C2 8D F7 9B 65 D2 61 51 DF 58 F7 EA A3      
+
+06 BF 43 21 1B 6A B2 44 1C C3 F7 6C C2 60 B0 B1
+A7 7E 8E D1 AA BE 0B 5D 05 C4 FF E6 AC 14 23 AB
+47 8E B1 A1 FE 26 1A 2C 6C 15 06 11 09 B3 FE DA
+
+we can determine how much of our query is in the 3rd line by working backward from our 3 line query with a's until one dissapears
+as it turns out, if we input 57 a's, we lose a repeated line.
+so, we can find out how much of our input is in the 3rd block by taking 58 modulo 16
+
+58 % 16 = 10
+
+from this test, we now know that the application is using ECB mode in their AES encryption.
+
+because we know that the first 10 characters are on line 3
+we can control what comes after that, and encrypt whatever we want, as long as it's in 16 character chunks.
+
+now that we know how the encryption works, let's try asking the database for the password
+
+aaaaaaaaa'
+G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPIR27gK4CQl3Jcmv%2F0YAxYOstdkbwCSkbjZzJR1FrozncqM9OYQkTq645oGdhkgSlo%3D
+
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c 
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2 
+11 db b8 0a e0 24 25 dc 97 26 bf fd 18 03 16 0e 
+b2 d7 64 6f 00 92 91 b8 d9 cc 94 75 16 ba 33 9d 
+ca 8c f4 e6 10 91 3a ba e3 9a 06 76 19 20 4a 5a
+
+aaaaaaaaaa
+G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPLAhy3ui8kLEVaROwiiI6Oec4pf%2B0pFACRndRda5Za71vNN8znGntzhH2ZQu87WJwI%3D
+
+bbbbbbbbbb
+G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPJcgFy9Kftj4uxTZFMlx6iWc4pf%2B0pFACRndRda5Za71vNN8znGntzhH2ZQu87WJwI%3D
+
+in the above examples, the hex for the line with the quote is different than the other two
+what if we sent a bunch of single quotes?
+
+''''''''''''''''''''''''''''''''
+G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPLLJ%2BfKG2EdMwV%2BmgKUGED3f56v%2FXanbNXVQscBj18lZ3%2Ber%2F12p2zV1ULHAY9fJWd%2Fnq%2F9dqds1dVCxwGPXyVnUeO5Ky%2FGvQlE0i0pOiGeBKd%2BjtGqvgtdBcT%2F5qwUI6tHjrGh%2FiYaLGwVBhEJs%2F7a
+
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c 
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2 
+cb 27 e7 ca 1b 61 1d 33 05 7e 9a 02 94 18 40 f7 
+7f 9e af fd 76 a7 6c d5 d5 42 c7 01 8f 5f 25 67 
+7f 9e af fd 76 a7 6c d5 d5 42 c7 01 8f 5f 25 67 
+7f 9e af fd 76 a7 6c d5 d5 42 c7 01 8f 5f 25 67 
+51 e3 b9 2b 2f c6 bd 09 44 d2 2d 29 3a 21 9e 04 
+a7 7e 8e d1 aa be 0b 5d 05 c4 ff e6 ac 14 23 ab 
+47 8e b1 a1 fe 26 1a 2c 6c 15 06 11 09 b3 fe da
+
+this is intereseting because we sent 32 single quotes, and our output has 3 lines (minimum 58 bytes, 3 identical blocks of 16 + 10 in block 3)
+so we got at least 58 bytes of stuff back when we only sent 32
+most likely the server is escaping the single quotes, which means that there are a total of 64 bytes we control
+so, there are 10 bytes we control in block 3, 48 in blocks 4-6, and 6 bytes in block 7.
+we also now know that the server escapes single quotes, so we should find a way around that too.
+\ is also escaped, so we can't use \\'
+
+something like
+' select * from users where username = natas29 -- 
+
+we need to find a way to get a line we control which starts with an unescaped single quote
+i.e. the quote is escaped but teh escape character is in the previous block.
+
+from our previous aaaaaaaaa' entry, we know that b2 is an encrypted unescaped single quote at the start of a line
+
+the SQL on the server probably looks somethign like this
+
+select * from jokes where joke like '<user input>'
+
+so if we want to inject into this...
+
+...like 'aaaaaaaaa'; select password from users where username = natas29
+
+putting this into 16 character blocks...
+; select passw
+
