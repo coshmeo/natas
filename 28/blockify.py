@@ -32,7 +32,7 @@ for j in range(math.ceil(len(base64.b64decode(unquote(query))[:48])/16)):
 # split the payload into 16 byte lines
 for i in range(math.ceil(len(string)/16)): # first iteration
     if i == 0:
-        payload = ' '*9+'\"'+''.join(chars[0:15])
+        payload = ' '*9+'\''+''.join(chars[0:15])
         payload = quote_plus(payload) # url encode payload
         r = requests.post(url+payload, headers=headers)
         query = r.url[60:]
