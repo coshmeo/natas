@@ -1,2 +1,20 @@
 airooCaiseiyee8he8xongien9euhe8b
 
+possible regex for the string 'natas'
+denies request, does not remove from query (so can't exploit a non-recursive function)
+appears to be written in perl.
+
+regex probably looks somehting like
+
+if 'natas' in string:
+    deny request;
+    print meep;
+else:
+    send request;
+
+when the request is sent to the server, it rcvs `file` & looks for it, then sends it back to the website
+
+per https://cheatsheet.haax.fr/linux-systems/programing-languages/perl/
+
+open() function is vulnerable and can be used to execute commands
+# ex : “| shutdown -r |”
