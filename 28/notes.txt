@@ -155,5 +155,28 @@ f3 4d f3 39 c6 9e dc e1 1f 66 50 bb ce d6 27 02
 
 didn't work, probably something wrong with the SQL query
 
-maybe if we change the 7b at the start of the payload block to b2?
-nope, still doesn't work.
+let's try using a union statement
+
+union statement in SQL requires the following:
+    Every SELECT statement within UNION must have the same number of columns
+    The columns must also have similar data types
+    The columns in every SELECT statement must also be in the same order (in terms of data type)
+
+based on the way the applicaiton behaves, we can assume their query returns 1 column of varchar
+so, we need to make sure we request exactly 1 column of varchar from our select statement
+something like the following should work...
+
+ union select password from users -- 
+
+Note: there needs to be a space at the beginning, and before and after the comment ( -- ) or it will not work.
+
+1b e8 25 11 a7 ba 5b fd 57 8c 0e ef 46 6d b5 9c
+dc 84 72 8f dc f8 9d 93 75 1d 10 a7 c7 5c 8c f2
+2d 94 c3 37 a9 38 b3 91 10 79 3f 6c d8 c4 9b 1b
+f8 9d d8 db ec 15 c6 a6 d9 99 3a 3d c7 b7 a3 08
+86 95 17 54 f7 ad 56 45 4e b5 d5 b6 76 8e e6 46
+72 f9 ec 4c c9 22 37 33 bf 4e 6b 89 94 09 44 3f
+a7 7e 8e d1 aa be 0b 5d 05 c4 ff e6 ac 14 23 ab
+47 8e b1 a1 fe 26 1a 2c 6c 15 06 11 09 b3 fe da
+
+et voila, the password appears.
