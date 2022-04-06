@@ -18,3 +18,9 @@ per https://cheatsheet.haax.fr/linux-systems/programing-languages/perl/
 
 open() function is vulnerable and can be used to execute commands
 # ex : “| shutdown -r |”
+
+| echo /etc works, but the natas filter still applies here, so we need to find a way around that.
+it also appears the function is appending .txt to the input.
+
+my initial thought is to try using grep to search for the path, using wildcards to bypass the filter.
+something like `grep /etc/nata*_webpass/nata*30`
